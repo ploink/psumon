@@ -1,0 +1,828 @@
+
+PsuMon.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000043e  00000000  00000000  000000b4  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000012  00800060  0000043e  000004f2  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .eeprom       00000003  00810000  00810000  00000504  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  3 .fuse         00000003  00820000  00820000  00000507  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  4 .stab         00000828  00000000  00000000  0000050c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  5 .stabstr      00000181  00000000  00000000  00000d34  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .comment      0000002f  00000000  00000000  00000eb5  2**0
+                  CONTENTS, READONLY
+  7 .debug_aranges 00000020  00000000  00000000  00000ee4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_info   0000058f  00000000  00000000  00000f04  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_abbrev 000001d7  00000000  00000000  00001493  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_line   0000032a  00000000  00000000  0000166a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_frame  00000034  00000000  00000000  00001994  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_str    00000213  00000000  00000000  000019c8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 13 .debug_loc    000006f2  00000000  00000000  00001bdb  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 14 .debug_ranges 00000028  00000000  00000000  000022cd  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	10 c0       	rjmp	.+32     	; 0x22 <__ctors_end>
+   2:	20 c0       	rjmp	.+64     	; 0x44 <__bad_interrupt>
+   4:	1f c0       	rjmp	.+62     	; 0x44 <__bad_interrupt>
+   6:	1e c0       	rjmp	.+60     	; 0x44 <__bad_interrupt>
+   8:	1d c0       	rjmp	.+58     	; 0x44 <__bad_interrupt>
+   a:	1c c0       	rjmp	.+56     	; 0x44 <__bad_interrupt>
+   c:	1b c0       	rjmp	.+54     	; 0x44 <__bad_interrupt>
+   e:	1a c0       	rjmp	.+52     	; 0x44 <__bad_interrupt>
+  10:	19 c0       	rjmp	.+50     	; 0x44 <__bad_interrupt>
+  12:	18 c0       	rjmp	.+48     	; 0x44 <__bad_interrupt>
+  14:	17 c0       	rjmp	.+46     	; 0x44 <__bad_interrupt>
+  16:	16 c0       	rjmp	.+44     	; 0x44 <__bad_interrupt>
+  18:	15 c0       	rjmp	.+42     	; 0x44 <__bad_interrupt>
+  1a:	14 c0       	rjmp	.+40     	; 0x44 <__bad_interrupt>
+  1c:	13 c0       	rjmp	.+38     	; 0x44 <__bad_interrupt>
+  1e:	12 c0       	rjmp	.+36     	; 0x44 <__bad_interrupt>
+  20:	11 c0       	rjmp	.+34     	; 0x44 <__bad_interrupt>
+
+00000022 <__ctors_end>:
+  22:	11 24       	eor	r1, r1
+  24:	1f be       	out	0x3f, r1	; 63
+  26:	cf ed       	ldi	r28, 0xDF	; 223
+  28:	cd bf       	out	0x3d, r28	; 61
+
+0000002a <__do_copy_data>:
+  2a:	10 e0       	ldi	r17, 0x00	; 0
+  2c:	a0 e6       	ldi	r26, 0x60	; 96
+  2e:	b0 e0       	ldi	r27, 0x00	; 0
+  30:	ee e3       	ldi	r30, 0x3E	; 62
+  32:	f4 e0       	ldi	r31, 0x04	; 4
+  34:	02 c0       	rjmp	.+4      	; 0x3a <__do_copy_data+0x10>
+  36:	05 90       	lpm	r0, Z+
+  38:	0d 92       	st	X+, r0
+  3a:	a2 37       	cpi	r26, 0x72	; 114
+  3c:	b1 07       	cpc	r27, r17
+  3e:	d9 f7       	brne	.-10     	; 0x36 <__do_copy_data+0xc>
+  40:	02 d0       	rcall	.+4      	; 0x46 <main>
+  42:	fb c1       	rjmp	.+1014   	; 0x43a <_exit>
+
+00000044 <__bad_interrupt>:
+  44:	dd cf       	rjmp	.-70     	; 0x0 <__vectors>
+
+00000046 <main>:
+static const byte RIPMAX12 = 0.120*255/1.1;
+
+static const word pattern[] = {0,0xffff,0x7fff,0x5fff,0x57ff,0x55ff,0x557f};
+
+int main(void)
+{	
+  46:	cf 93       	push	r28
+  48:	df 93       	push	r29
+  4a:	cd b7       	in	r28, 0x3d	; 61
+  4c:	dd 27       	eor	r29, r29
+  4e:	cb 50       	subi	r28, 0x0B	; 11
+  50:	cd bf       	out	0x3d, r28	; 61
+	// Set System Clock prescaler to 1, just in case CKDIV8 fuse is programmed.
+	CLKPR=128; CLKPR=0;
+  52:	80 e8       	ldi	r24, 0x80	; 128
+  54:	86 bd       	out	0x26, r24	; 38
+  56:	16 bc       	out	0x26, r1	; 38
+
+
+	// Init I/O
+	DDRA=0b10001000; PORTA=0;
+  58:	88 e8       	ldi	r24, 0x88	; 136
+  5a:	8a bb       	out	0x1a, r24	; 26
+  5c:	1b ba       	out	0x1b, r1	; 27
+	DDRB=0b00000111; PORTB=0;
+  5e:	87 e0       	ldi	r24, 0x07	; 7
+  60:	87 bb       	out	0x17, r24	; 23
+  62:	18 ba       	out	0x18, r1	; 24
+	DIDR0=0b00000111; // Disable digital input buffers on analog pins.	
+  64:	81 b9       	out	0x01, r24	; 1
+
+	LED_PWR=1;		// Enable power led immediately on boot.
+  66:	df 9a       	sbi	0x1b, 7	; 27
+	byte rip3=0; byte rip5=0; byte rip12=0;
+	byte dev3=0; byte dev5=0; byte dev12=0;
+	byte counter=0;
+
+	// Read calibration values from EEPROM
+	b=eeprom_read_byte(&EE_REF3);
+  68:	82 e0       	ldi	r24, 0x02	; 2
+  6a:	90 e0       	ldi	r25, 0x00	; 0
+  6c:	d0 d1       	rcall	.+928    	; 0x40e <__eerd_byte_tn24a>
+	if (b==255) calibrate=1;
+  6e:	8f 3f       	cpi	r24, 0xFF	; 255
+  70:	71 f0       	breq	.+28     	; 0x8e <main+0x48>
+	else {
+		REF3=b;
+  72:	80 93 62 00 	sts	0x0062, r24
+		REF5=eeprom_read_byte(&EE_REF5);
+  76:	81 e0       	ldi	r24, 0x01	; 1
+  78:	90 e0       	ldi	r25, 0x00	; 0
+  7a:	c9 d1       	rcall	.+914    	; 0x40e <__eerd_byte_tn24a>
+  7c:	80 93 61 00 	sts	0x0061, r24
+		REF12=eeprom_read_byte(&EE_REF12);
+  80:	80 e0       	ldi	r24, 0x00	; 0
+  82:	90 e0       	ldi	r25, 0x00	; 0
+  84:	c4 d1       	rcall	.+904    	; 0x40e <__eerd_byte_tn24a>
+  86:	80 93 60 00 	sts	0x0060, r24
+		calibrate=0;
+  8a:	19 82       	std	Y+1, r1	; 0x01
+  8c:	02 c0       	rjmp	.+4      	; 0x92 <main+0x4c>
+	byte dev3=0; byte dev5=0; byte dev12=0;
+	byte counter=0;
+
+	// Read calibration values from EEPROM
+	b=eeprom_read_byte(&EE_REF3);
+	if (b==255) calibrate=1;
+  8e:	21 e0       	ldi	r18, 0x01	; 1
+  90:	29 83       	std	Y+1, r18	; 0x01
+		REF12=eeprom_read_byte(&EE_REF12);
+		calibrate=0;
+	}
+	
+	// Init ADC
+	ADCSRA=0b10000101;	// Enable with prescaler 32. 
+  92:	85 e8       	ldi	r24, 0x85	; 133
+  94:	86 b9       	out	0x06, r24	; 6
+	// Conversion time: 14 ADC cycles * 32 system cyles / 8MHz = 56us
+	ADCSRB=0b00010000;	// ADC result left adjusted.	
+  96:	80 e1       	ldi	r24, 0x10	; 16
+  98:	83 b9       	out	0x03, r24	; 3
+	StartADC(3V);		// First conversion to init ADC.
+  9a:	80 e8       	ldi	r24, 0x80	; 128
+  9c:	87 b9       	out	0x07, r24	; 7
+  9e:	36 9a       	sbi	0x06, 6	; 6
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  a0:	4f ef       	ldi	r20, 0xFF	; 255
+  a2:	52 e5       	ldi	r21, 0x52	; 82
+  a4:	67 e0       	ldi	r22, 0x07	; 7
+  a6:	41 50       	subi	r20, 0x01	; 1
+  a8:	50 40       	sbci	r21, 0x00	; 0
+  aa:	60 40       	sbci	r22, 0x00	; 0
+  ac:	e1 f7       	brne	.-8      	; 0xa6 <main+0x60>
+  ae:	00 c0       	rjmp	.+0      	; 0xb0 <main+0x6a>
+  b0:	00 00       	nop
+	// PSU must settle in 500ms. When MCU starts, The 12V rail passed 4.3V brownout plus some 7805 voltage drop.
+	// We guess it should be up in 300ms. If not, this results in a fault indication.
+	_delay_ms(300);
+	
+	// Wait longer if we connect it for calibration.
+    if (calibrate) _delay_ms(2000);
+  b2:	e9 81       	ldd	r30, Y+1	; 0x01
+  b4:	ee 23       	and	r30, r30
+  b6:	49 f0       	breq	.+18     	; 0xca <main+0x84>
+  b8:	ff ef       	ldi	r31, 0xFF	; 255
+  ba:	23 ed       	ldi	r18, 0xD3	; 211
+  bc:	40 e3       	ldi	r20, 0x30	; 48
+  be:	f1 50       	subi	r31, 0x01	; 1
+  c0:	20 40       	sbci	r18, 0x00	; 0
+  c2:	40 40       	sbci	r20, 0x00	; 0
+  c4:	e1 f7       	brne	.-8      	; 0xbe <main+0x78>
+  c6:	00 c0       	rjmp	.+0      	; 0xc8 <main+0x82>
+  c8:	00 00       	nop
+		  if (beep&bitpos)		BUZZER=1; else BUZZER=0;
+		  bitpos=bitpos>>1;
+		  
+		  // after end of blink sequence then ....
+		  if (bitpos==0) {
+			  bitpos=0x8000;
+  ca:	80 e0       	ldi	r24, 0x00	; 0
+  cc:	d1 2c       	mov	r13, r1
+  ce:	e1 2c       	mov	r14, r1
+  d0:	f1 2c       	mov	r15, r1
+  d2:	a1 2c       	mov	r10, r1
+  d4:	b1 2c       	mov	r11, r1
+  d6:	c1 2c       	mov	r12, r1
+  d8:	20 e0       	ldi	r18, 0x00	; 0
+  da:	30 e8       	ldi	r19, 0x80	; 128
+  dc:	21 2c       	mov	r2, r1
+  de:	31 2c       	mov	r3, r1
+  e0:	6f ef       	ldi	r22, 0xFF	; 255
+  e2:	7f ef       	ldi	r23, 0xFF	; 255
+  e4:	7e 83       	std	Y+6, r23	; 0x06
+  e6:	6d 83       	std	Y+5, r22	; 0x05
+  e8:	1c 82       	std	Y+4, r1	; 0x04
+  ea:	1b 82       	std	Y+3, r1	; 0x03
+  ec:	1b 86       	std	Y+11, r1	; 0x0b
+  ee:	1a 86       	std	Y+10, r1	; 0x0a
+  f0:	81 2c       	mov	r8, r1
+  f2:	91 2c       	mov	r9, r1
+
+			  // calculate new blink patterns
+			  b=dev12/(byte)(REF12*5/100);		// blink once for every 5% deviation.
+  f4:	14 e1       	ldi	r17, 0x14	; 20
+  f6:	41 2e       	mov	r4, r17
+  f8:	51 2c       	mov	r5, r1
+  fa:	01 c0       	rjmp	.+2      	; 0xfe <__stack+0x1f>
+			LED_3V=1; 
+			while (1);
+	    }
+
+		if (counter==4) {
+		  counter=0;		  		  
+  fc:	80 e0       	ldi	r24, 0x00	; 0
+	// Wait longer if we connect it for calibration.
+    if (calibrate) _delay_ms(2000);
+	
+    while(1)
+    {		
+		counter++;
+  fe:	8f 5f       	subi	r24, 0xFF	; 255
+ 100:	1a 82       	std	Y+2, r1	; 0x02
+
+		// Init min/max values.		
+		byte min3 = 255; byte min5 = 255; byte min12 = 255;
+		byte max3 =   0; byte max5 =   0; byte max12 =   0;
+		word sum3 =   0; word sum5 =   0; word sum12 =   0;
+ 102:	19 86       	std	Y+9, r1	; 0x09
+ 104:	18 86       	std	Y+8, r1	; 0x08
+ 106:	00 e0       	ldi	r16, 0x00	; 0
+ 108:	10 e0       	ldi	r17, 0x00	; 0
+ 10a:	40 e0       	ldi	r20, 0x00	; 0
+ 10c:	50 e0       	ldi	r21, 0x00	; 0
+    {		
+		counter++;
+
+		// Init min/max values.		
+		byte min3 = 255; byte min5 = 255; byte min12 = 255;
+		byte max3 =   0; byte max5 =   0; byte max12 =   0;
+ 10e:	60 e0       	ldi	r22, 0x00	; 0
+ 110:	e0 e0       	ldi	r30, 0x00	; 0
+ 112:	1f 82       	std	Y+7, r1	; 0x07
+    while(1)
+    {		
+		counter++;
+
+		// Init min/max values.		
+		byte min3 = 255; byte min5 = 255; byte min12 = 255;
+ 114:	9f ef       	ldi	r25, 0xFF	; 255
+ 116:	7f ef       	ldi	r23, 0xFF	; 255
+ 118:	ff ef       	ldi	r31, 0xFF	; 255
+		word sum3 =   0; word sum5 =   0; word sum12 =   0;
+		
+		// loop 256 times using only 8-bit counter. Sample all three voltages and get min/max/avg values.
+		// Total time = 3 * conversion time (56us) * 256 = 43ms
+		byte i=0; do {
+			StartADC(3V);  GetADC(b);
+ 11a:	a0 e8       	ldi	r26, 0x80	; 128
+ 11c:	a7 b9       	out	0x07, r26	; 7
+ 11e:	36 9a       	sbi	0x06, 6	; 6
+ 120:	36 99       	sbic	0x06, 6	; 6
+ 122:	fe cf       	rjmp	.-4      	; 0x120 <__stack+0x41>
+ 124:	b5 b1       	in	r27, 0x05	; 5
+ 126:	bf 17       	cp	r27, r31
+ 128:	08 f4       	brcc	.+2      	; 0x12c <__stack+0x4d>
+ 12a:	fb 2f       	mov	r31, r27
+ 12c:	6f 80       	ldd	r6, Y+7	; 0x07
+ 12e:	6b 16       	cp	r6, r27
+ 130:	08 f4       	brcc	.+2      	; 0x134 <__stack+0x55>
+ 132:	bf 83       	std	Y+7, r27	; 0x07
+			if (b<min3) min3=b; 
+			if (b>max3) max3=b; 
+			sum3+=b;
+ 134:	4b 0f       	add	r20, r27
+ 136:	51 1d       	adc	r21, r1
+			StartADC(5V);  GetADC(b);
+ 138:	b1 e8       	ldi	r27, 0x81	; 129
+ 13a:	7b 2e       	mov	r7, r27
+ 13c:	77 b8       	out	0x07, r7	; 7
+ 13e:	36 9a       	sbi	0x06, 6	; 6
+ 140:	36 99       	sbic	0x06, 6	; 6
+ 142:	fe cf       	rjmp	.-4      	; 0x140 <__stack+0x61>
+ 144:	b5 b1       	in	r27, 0x05	; 5
+ 146:	b7 17       	cp	r27, r23
+ 148:	08 f4       	brcc	.+2      	; 0x14c <__stack+0x6d>
+ 14a:	7b 2f       	mov	r23, r27
+ 14c:	eb 17       	cp	r30, r27
+ 14e:	08 f4       	brcc	.+2      	; 0x152 <__stack+0x73>
+ 150:	eb 2f       	mov	r30, r27
+			if (b<min5) min5=b; 
+			if (b>max5) max5=b; 
+			sum5+=b;
+ 152:	0b 0f       	add	r16, r27
+ 154:	11 1d       	adc	r17, r1
+			StartADC(12V); GetADC(b);
+ 156:	a2 e8       	ldi	r26, 0x82	; 130
+ 158:	a7 b9       	out	0x07, r26	; 7
+ 15a:	36 9a       	sbi	0x06, 6	; 6
+ 15c:	36 99       	sbic	0x06, 6	; 6
+ 15e:	fe cf       	rjmp	.-4      	; 0x15c <__stack+0x7d>
+ 160:	b5 b1       	in	r27, 0x05	; 5
+ 162:	b9 17       	cp	r27, r25
+ 164:	08 f4       	brcc	.+2      	; 0x168 <__stack+0x89>
+ 166:	9b 2f       	mov	r25, r27
+ 168:	6b 17       	cp	r22, r27
+ 16a:	08 f4       	brcc	.+2      	; 0x16e <__stack+0x8f>
+ 16c:	6b 2f       	mov	r22, r27
+			if (b<min12) min12=b; 
+			if (b>max12) max12=b; 
+			sum12+=b;
+ 16e:	68 84       	ldd	r6, Y+8	; 0x08
+ 170:	79 84       	ldd	r7, Y+9	; 0x09
+ 172:	6b 0e       	add	r6, r27
+ 174:	71 1c       	adc	r7, r1
+ 176:	79 86       	std	Y+9, r7	; 0x09
+ 178:	68 86       	std	Y+8, r6	; 0x08
+ 17a:	aa 81       	ldd	r26, Y+2	; 0x02
+ 17c:	a1 50       	subi	r26, 0x01	; 1
+ 17e:	aa 83       	std	Y+2, r26	; 0x02
+		} while (++i);
+ 180:	a1 11       	cpse	r26, r1
+ 182:	cb cf       	rjmp	.-106    	; 0x11a <__stack+0x3b>
+			
+		sum3>>=8; sum5>>=8;	sum12>>=8;
+ 184:	45 2f       	mov	r20, r21
+ 186:	55 27       	eor	r21, r21
+ 188:	01 2f       	mov	r16, r17
+ 18a:	11 27       	eor	r17, r17
+ 18c:	67 2c       	mov	r6, r7
+ 18e:	77 24       	eor	r7, r7
+			
+		// calculate maximum peak-peak ripple from min/max values.
+		b=max3-min3;   if (b>rip3)    rip3=b;
+ 190:	af 81       	ldd	r26, Y+7	; 0x07
+ 192:	af 1b       	sub	r26, r31
+ 194:	ca 16       	cp	r12, r26
+ 196:	08 f4       	brcc	.+2      	; 0x19a <__stack+0xbb>
+ 198:	ca 2e       	mov	r12, r26
+		b=max5-min5;   if (b>rip5)    rip5=b;
+ 19a:	e7 1b       	sub	r30, r23
+ 19c:	be 16       	cp	r11, r30
+ 19e:	08 f4       	brcc	.+2      	; 0x1a2 <__stack+0xc3>
+ 1a0:	be 2e       	mov	r11, r30
+		b=max12-min12; if (b>rip12)   rip12=b;
+ 1a2:	69 1b       	sub	r22, r25
+ 1a4:	a6 16       	cp	r10, r22
+ 1a6:	08 f4       	brcc	.+2      	; 0x1aa <__stack+0xcb>
+ 1a8:	a6 2e       	mov	r10, r22
+		
+		// calculate deviation form reference values
+  		if (sum3>REF3)   b=sum3-REF3;   else b=REF3-sum3;   if (b>dev3) dev3=b;
+ 1aa:	90 91 62 00 	lds	r25, 0x0062
+ 1ae:	e9 2f       	mov	r30, r25
+ 1b0:	f0 e0       	ldi	r31, 0x00	; 0
+ 1b2:	e4 17       	cp	r30, r20
+ 1b4:	f5 07       	cpc	r31, r21
+ 1b6:	20 f4       	brcc	.+8      	; 0x1c0 <__stack+0xe1>
+ 1b8:	b4 2f       	mov	r27, r20
+ 1ba:	b9 1b       	sub	r27, r25
+ 1bc:	9b 2f       	mov	r25, r27
+ 1be:	01 c0       	rjmp	.+2      	; 0x1c2 <__stack+0xe3>
+ 1c0:	94 1b       	sub	r25, r20
+ 1c2:	f9 16       	cp	r15, r25
+ 1c4:	08 f4       	brcc	.+2      	; 0x1c8 <__stack+0xe9>
+ 1c6:	f9 2e       	mov	r15, r25
+		if (sum5>REF5)   b=sum5-REF5;   else b=REF5-sum5;   if (b>dev5) dev5=b;
+ 1c8:	90 91 61 00 	lds	r25, 0x0061
+ 1cc:	e9 2f       	mov	r30, r25
+ 1ce:	f0 e0       	ldi	r31, 0x00	; 0
+ 1d0:	e0 17       	cp	r30, r16
+ 1d2:	f1 07       	cpc	r31, r17
+ 1d4:	20 f4       	brcc	.+8      	; 0x1de <__stack+0xff>
+ 1d6:	e0 2f       	mov	r30, r16
+ 1d8:	e9 1b       	sub	r30, r25
+ 1da:	9e 2f       	mov	r25, r30
+ 1dc:	01 c0       	rjmp	.+2      	; 0x1e0 <__stack+0x101>
+ 1de:	90 1b       	sub	r25, r16
+ 1e0:	e9 16       	cp	r14, r25
+ 1e2:	08 f4       	brcc	.+2      	; 0x1e6 <__stack+0x107>
+ 1e4:	e9 2e       	mov	r14, r25
+		if (sum12>REF12) b=sum12-REF12; else b=REF12-sum12; if (b>dev12) dev12=b;					
+ 1e6:	90 91 60 00 	lds	r25, 0x0060
+ 1ea:	e9 2f       	mov	r30, r25
+ 1ec:	f0 e0       	ldi	r31, 0x00	; 0
+ 1ee:	e6 15       	cp	r30, r6
+ 1f0:	f7 05       	cpc	r31, r7
+ 1f2:	20 f4       	brcc	.+8      	; 0x1fc <__stack+0x11d>
+ 1f4:	f6 2d       	mov	r31, r6
+ 1f6:	f9 1b       	sub	r31, r25
+ 1f8:	9f 2f       	mov	r25, r31
+ 1fa:	01 c0       	rjmp	.+2      	; 0x1fe <__stack+0x11f>
+ 1fc:	96 19       	sub	r25, r6
+ 1fe:	d9 16       	cp	r13, r25
+ 200:	08 f4       	brcc	.+2      	; 0x204 <__stack+0x125>
+ 202:	d9 2e       	mov	r13, r25
+
+  	    if (calibrate) {
+ 204:	e9 81       	ldd	r30, Y+1	; 0x01
+ 206:	ee 23       	and	r30, r30
+ 208:	e9 f0       	breq	.+58     	; 0x244 <__stack+0x165>
+			// Device not calibrated. We should do it now if values are plausible.
+			// If not then signal with 5V LED and freeze. 
+			// It probably means we just programmed the chip, otherwise a hardware fault.
+			if (dev3>20 || dev5>20 || dev12>20) { 
+ 20a:	f4 e1       	ldi	r31, 0x14	; 20
+ 20c:	ff 15       	cp	r31, r15
+ 20e:	20 f0       	brcs	.+8      	; 0x218 <__stack+0x139>
+ 210:	fe 15       	cp	r31, r14
+ 212:	10 f0       	brcs	.+4      	; 0x218 <__stack+0x139>
+ 214:	fd 15       	cp	r31, r13
+ 216:	10 f4       	brcc	.+4      	; 0x21c <__stack+0x13d>
+				LED_5V=1; 
+ 218:	c1 9a       	sbi	0x18, 1	; 24
+ 21a:	ff cf       	rjmp	.-2      	; 0x21a <__stack+0x13b>
+				while (1); 
+			}
+			// Save calibration values.
+			REF3=sum3; REF5=sum5; REF12=sum12;
+ 21c:	40 93 62 00 	sts	0x0062, r20
+ 220:	00 93 61 00 	sts	0x0061, r16
+ 224:	60 92 60 00 	sts	0x0060, r6
+			eeprom_write_byte(&EE_REF3,sum3);
+ 228:	64 2f       	mov	r22, r20
+ 22a:	82 e0       	ldi	r24, 0x02	; 2
+ 22c:	90 e0       	ldi	r25, 0x00	; 0
+ 22e:	f7 d0       	rcall	.+494    	; 0x41e <__eewr_byte_tn24a>
+			eeprom_write_byte(&EE_REF5,sum5);
+ 230:	60 2f       	mov	r22, r16
+ 232:	81 e0       	ldi	r24, 0x01	; 1
+ 234:	90 e0       	ldi	r25, 0x00	; 0
+ 236:	f3 d0       	rcall	.+486    	; 0x41e <__eewr_byte_tn24a>
+			eeprom_write_byte(&EE_REF12,sum12);
+ 238:	66 2d       	mov	r22, r6
+ 23a:	80 e0       	ldi	r24, 0x00	; 0
+ 23c:	90 e0       	ldi	r25, 0x00	; 0
+ 23e:	ef d0       	rcall	.+478    	; 0x41e <__eewr_byte_tn24a>
+			LED_3V=1; 
+ 240:	c0 9a       	sbi	0x18, 0	; 24
+ 242:	ff cf       	rjmp	.-2      	; 0x242 <__stack+0x163>
+			while (1);
+	    }
+
+		if (counter==4) {
+ 244:	84 30       	cpi	r24, 0x04	; 4
+ 246:	09 f0       	breq	.+2      	; 0x24a <__stack+0x16b>
+ 248:	5a cf       	rjmp	.-332    	; 0xfe <__stack+0x1f>
+		  counter=0;		  		  
+ 		  // Do blinky thing
+		  if (blink3&bitpos)	LED_3V=1; else LED_3V=0;
+ 24a:	c9 01       	movw	r24, r18
+ 24c:	88 21       	and	r24, r8
+ 24e:	99 21       	and	r25, r9
+ 250:	89 2b       	or	r24, r25
+ 252:	11 f0       	breq	.+4      	; 0x258 <__stack+0x179>
+ 254:	c0 9a       	sbi	0x18, 0	; 24
+ 256:	01 c0       	rjmp	.+2      	; 0x25a <__stack+0x17b>
+ 258:	c0 98       	cbi	0x18, 0	; 24
+		  if (blink5&bitpos)	LED_5V=1; else LED_5V=0;
+ 25a:	8a 85       	ldd	r24, Y+10	; 0x0a
+ 25c:	9b 85       	ldd	r25, Y+11	; 0x0b
+ 25e:	82 23       	and	r24, r18
+ 260:	93 23       	and	r25, r19
+ 262:	89 2b       	or	r24, r25
+ 264:	11 f0       	breq	.+4      	; 0x26a <__stack+0x18b>
+ 266:	c1 9a       	sbi	0x18, 1	; 24
+ 268:	01 c0       	rjmp	.+2      	; 0x26c <__stack+0x18d>
+ 26a:	c1 98       	cbi	0x18, 1	; 24
+		  if (blink12&bitpos)	LED_12V=1; else LED_12V=0;
+ 26c:	8b 81       	ldd	r24, Y+3	; 0x03
+ 26e:	9c 81       	ldd	r25, Y+4	; 0x04
+ 270:	82 23       	and	r24, r18
+ 272:	93 23       	and	r25, r19
+ 274:	89 2b       	or	r24, r25
+ 276:	11 f0       	breq	.+4      	; 0x27c <__stack+0x19d>
+ 278:	c2 9a       	sbi	0x18, 2	; 24
+ 27a:	01 c0       	rjmp	.+2      	; 0x27e <__stack+0x19f>
+ 27c:	c2 98       	cbi	0x18, 2	; 24
+		  if (blinkPWR&bitpos)	LED_PWR=1; else LED_PWR=0;
+ 27e:	8d 81       	ldd	r24, Y+5	; 0x05
+ 280:	9e 81       	ldd	r25, Y+6	; 0x06
+ 282:	82 23       	and	r24, r18
+ 284:	93 23       	and	r25, r19
+ 286:	89 2b       	or	r24, r25
+ 288:	11 f0       	breq	.+4      	; 0x28e <__stack+0x1af>
+ 28a:	df 9a       	sbi	0x1b, 7	; 27
+ 28c:	01 c0       	rjmp	.+2      	; 0x290 <__stack+0x1b1>
+ 28e:	df 98       	cbi	0x1b, 7	; 27
+		  if (beep&bitpos)		BUZZER=1; else BUZZER=0;
+ 290:	c9 01       	movw	r24, r18
+ 292:	82 21       	and	r24, r2
+ 294:	93 21       	and	r25, r3
+ 296:	89 2b       	or	r24, r25
+ 298:	11 f0       	breq	.+4      	; 0x29e <__stack+0x1bf>
+ 29a:	db 9a       	sbi	0x1b, 3	; 27
+ 29c:	01 c0       	rjmp	.+2      	; 0x2a0 <__stack+0x1c1>
+ 29e:	db 98       	cbi	0x1b, 3	; 27
+		  bitpos=bitpos>>1;
+ 2a0:	36 95       	lsr	r19
+ 2a2:	27 95       	ror	r18
+		  
+		  // after end of blink sequence then ....
+		  if (bitpos==0) {
+ 2a4:	21 15       	cp	r18, r1
+ 2a6:	31 05       	cpc	r19, r1
+ 2a8:	09 f0       	breq	.+2      	; 0x2ac <__stack+0x1cd>
+ 2aa:	28 cf       	rjmp	.-432    	; 0xfc <__stack+0x1d>
+			  bitpos=0x8000;
+
+			  // calculate new blink patterns
+			  b=dev12/(byte)(REF12*5/100);		// blink once for every 5% deviation.
+ 2ac:	80 91 60 00 	lds	r24, 0x0060
+ 2b0:	90 e0       	ldi	r25, 0x00	; 0
+ 2b2:	b2 01       	movw	r22, r4
+ 2b4:	85 d0       	rcall	.+266    	; 0x3c0 <__divmodhi4>
+ 2b6:	8d 2d       	mov	r24, r13
+ 2b8:	77 d0       	rcall	.+238    	; 0x3a8 <__udivmodqi4>
+ 2ba:	e8 2f       	mov	r30, r24
+			  c=rip12/RIPMAX12;
+ 2bc:	8a 2d       	mov	r24, r10
+ 2be:	6b e1       	ldi	r22, 0x1B	; 27
+ 2c0:	73 d0       	rcall	.+230    	; 0x3a8 <__udivmodqi4>
+ 2c2:	e8 17       	cp	r30, r24
+ 2c4:	08 f4       	brcc	.+2      	; 0x2c8 <__stack+0x1e9>
+ 2c6:	e8 2f       	mov	r30, r24
+ 2c8:	2e 2f       	mov	r18, r30
+ 2ca:	e6 30       	cpi	r30, 0x06	; 6
+ 2cc:	08 f0       	brcs	.+2      	; 0x2d0 <__stack+0x1f1>
+ 2ce:	25 e0       	ldi	r18, 0x05	; 5
+			  if (c>b) b=c;
+			  if (b>5) b=5;
+			  byte peak=b;
+			  blink12=pattern[b+1];
+ 2d0:	a2 2f       	mov	r26, r18
+ 2d2:	b0 e0       	ldi	r27, 0x00	; 0
+ 2d4:	aa 0f       	add	r26, r26
+ 2d6:	bb 1f       	adc	r27, r27
+ 2d8:	ab 59       	subi	r26, 0x9B	; 155
+ 2da:	bf 4f       	sbci	r27, 0xFF	; 255
+ 2dc:	6d 90       	ld	r6, X+
+ 2de:	7c 90       	ld	r7, X
+ 2e0:	7c 82       	std	Y+4, r7	; 0x04
+ 2e2:	6b 82       	std	Y+3, r6	; 0x03
+
+			  b=dev5/(byte)(REF5*5/100);
+ 2e4:	80 91 61 00 	lds	r24, 0x0061
+ 2e8:	90 e0       	ldi	r25, 0x00	; 0
+ 2ea:	b2 01       	movw	r22, r4
+ 2ec:	69 d0       	rcall	.+210    	; 0x3c0 <__divmodhi4>
+ 2ee:	8e 2d       	mov	r24, r14
+ 2f0:	5b d0       	rcall	.+182    	; 0x3a8 <__udivmodqi4>
+ 2f2:	a8 2f       	mov	r26, r24
+			  c=rip5/RIPMAX5;
+ 2f4:	8b 2d       	mov	r24, r11
+ 2f6:	6b e0       	ldi	r22, 0x0B	; 11
+ 2f8:	57 d0       	rcall	.+174    	; 0x3a8 <__udivmodqi4>
+ 2fa:	a8 17       	cp	r26, r24
+ 2fc:	08 f4       	brcc	.+2      	; 0x300 <__stack+0x221>
+ 2fe:	a8 2f       	mov	r26, r24
+ 300:	a6 30       	cpi	r26, 0x06	; 6
+ 302:	08 f0       	brcs	.+2      	; 0x306 <__stack+0x227>
+ 304:	a5 e0       	ldi	r26, 0x05	; 5
+ 306:	2a 17       	cp	r18, r26
+ 308:	08 f4       	brcc	.+2      	; 0x30c <__stack+0x22d>
+ 30a:	2a 2f       	mov	r18, r26
+			  if (c>b) b=c;
+			  if (b>5) b=5;
+			  if (b>peak) peak=b;
+			  blink5=pattern[b+1];
+ 30c:	b0 e0       	ldi	r27, 0x00	; 0
+ 30e:	aa 0f       	add	r26, r26
+ 310:	bb 1f       	adc	r27, r27
+ 312:	ab 59       	subi	r26, 0x9B	; 155
+ 314:	bf 4f       	sbci	r27, 0xFF	; 255
+ 316:	4d 91       	ld	r20, X+
+ 318:	5c 91       	ld	r21, X
+ 31a:	5b 87       	std	Y+11, r21	; 0x0b
+ 31c:	4a 87       	std	Y+10, r20	; 0x0a
+
+			  if (dev3>(REF3>>1)) blink3=pattern[0]; // Led off if there is no 3.3V
+ 31e:	80 91 62 00 	lds	r24, 0x0062
+ 322:	98 2f       	mov	r25, r24
+ 324:	96 95       	lsr	r25
+ 326:	9f 15       	cp	r25, r15
+ 328:	d0 f0       	brcs	.+52     	; 0x35e <__stack+0x27f>
+			  else {				  
+				  b=dev3/(byte)(REF3*5/100);		 
+ 32a:	90 e0       	ldi	r25, 0x00	; 0
+ 32c:	b2 01       	movw	r22, r4
+ 32e:	48 d0       	rcall	.+144    	; 0x3c0 <__divmodhi4>
+ 330:	8f 2d       	mov	r24, r15
+ 332:	3a d0       	rcall	.+116    	; 0x3a8 <__udivmodqi4>
+ 334:	a8 2f       	mov	r26, r24
+				  c=rip3/RIPMAX3;
+ 336:	8c 2d       	mov	r24, r12
+ 338:	6b e0       	ldi	r22, 0x0B	; 11
+ 33a:	36 d0       	rcall	.+108    	; 0x3a8 <__udivmodqi4>
+ 33c:	a8 17       	cp	r26, r24
+ 33e:	08 f4       	brcc	.+2      	; 0x342 <__stack+0x263>
+ 340:	a8 2f       	mov	r26, r24
+ 342:	a6 30       	cpi	r26, 0x06	; 6
+ 344:	08 f0       	brcs	.+2      	; 0x348 <__stack+0x269>
+ 346:	a5 e0       	ldi	r26, 0x05	; 5
+ 348:	2a 17       	cp	r18, r26
+ 34a:	08 f4       	brcc	.+2      	; 0x34e <__stack+0x26f>
+ 34c:	2a 2f       	mov	r18, r26
+				  if (c>b) b=c;
+				  if (b>5) b=5;
+				  if (b>peak) peak=b;
+				  blink3=pattern[b+1];				  
+ 34e:	b0 e0       	ldi	r27, 0x00	; 0
+ 350:	aa 0f       	add	r26, r26
+ 352:	bb 1f       	adc	r27, r27
+ 354:	ab 59       	subi	r26, 0x9B	; 155
+ 356:	bf 4f       	sbci	r27, 0xFF	; 255
+ 358:	8d 90       	ld	r8, X+
+ 35a:	9c 90       	ld	r9, X
+ 35c:	02 c0       	rjmp	.+4      	; 0x362 <__stack+0x283>
+			  if (c>b) b=c;
+			  if (b>5) b=5;
+			  if (b>peak) peak=b;
+			  blink5=pattern[b+1];
+
+			  if (dev3>(REF3>>1)) blink3=pattern[0]; // Led off if there is no 3.3V
+ 35e:	81 2c       	mov	r8, r1
+ 360:	91 2c       	mov	r9, r1
+				  if (b>peak) peak=b;
+				  blink3=pattern[b+1];				  
+			  }
+			  
+			  // "peak" contains worst measurement of all
+			  blinkPWR=pattern[peak+1];
+ 362:	a2 2f       	mov	r26, r18
+ 364:	b0 e0       	ldi	r27, 0x00	; 0
+ 366:	aa 0f       	add	r26, r26
+ 368:	bb 1f       	adc	r27, r27
+ 36a:	ab 59       	subi	r26, 0x9B	; 155
+ 36c:	bf 4f       	sbci	r27, 0xFF	; 255
+ 36e:	6d 91       	ld	r22, X+
+ 370:	7c 91       	ld	r23, X
+ 372:	7e 83       	std	Y+6, r23	; 0x06
+ 374:	6d 83       	std	Y+5, r22	; 0x05
+
+		  	  if (peak<2) peak=0;
+ 376:	22 30       	cpi	r18, 0x02	; 2
+ 378:	18 f0       	brcs	.+6      	; 0x380 <__stack+0x2a1>
+			  else peak-=2;			  			  	
+ 37a:	e2 2f       	mov	r30, r18
+ 37c:	e2 50       	subi	r30, 0x02	; 2
+ 37e:	01 c0       	rjmp	.+2      	; 0x382 <__stack+0x2a3>
+			  }
+			  
+			  // "peak" contains worst measurement of all
+			  blinkPWR=pattern[peak+1];
+
+		  	  if (peak<2) peak=0;
+ 380:	e0 e0       	ldi	r30, 0x00	; 0
+			  else peak-=2;			  			  	
+			  beep=~pattern[peak+1];		  	  
+ 382:	f0 e0       	ldi	r31, 0x00	; 0
+ 384:	ee 0f       	add	r30, r30
+ 386:	ff 1f       	adc	r31, r31
+ 388:	eb 59       	subi	r30, 0x9B	; 155
+ 38a:	ff 4f       	sbci	r31, 0xFF	; 255
+ 38c:	20 80       	ld	r2, Z
+ 38e:	31 80       	ldd	r3, Z+1	; 0x01
+ 390:	20 94       	com	r2
+ 392:	30 94       	com	r3
+			LED_3V=1; 
+			while (1);
+	    }
+
+		if (counter==4) {
+		  counter=0;		  		  
+ 394:	80 e0       	ldi	r24, 0x00	; 0
+		  	  if (peak<2) peak=0;
+			  else peak-=2;			  			  	
+			  beep=~pattern[peak+1];		  	  
+			    		  
+			  // reset data
+			  dev3=dev5=dev12=0;
+ 396:	d1 2c       	mov	r13, r1
+ 398:	e1 2c       	mov	r14, r1
+ 39a:	f1 2c       	mov	r15, r1
+			  rip3=rip5=rip12=0;			  
+ 39c:	a1 2c       	mov	r10, r1
+ 39e:	b1 2c       	mov	r11, r1
+ 3a0:	c1 2c       	mov	r12, r1
+		  if (beep&bitpos)		BUZZER=1; else BUZZER=0;
+		  bitpos=bitpos>>1;
+		  
+		  // after end of blink sequence then ....
+		  if (bitpos==0) {
+			  bitpos=0x8000;
+ 3a2:	20 e0       	ldi	r18, 0x00	; 0
+ 3a4:	30 e8       	ldi	r19, 0x80	; 128
+ 3a6:	ab ce       	rjmp	.-682    	; 0xfe <__stack+0x1f>
+
+000003a8 <__udivmodqi4>:
+ 3a8:	99 1b       	sub	r25, r25
+ 3aa:	79 e0       	ldi	r23, 0x09	; 9
+ 3ac:	04 c0       	rjmp	.+8      	; 0x3b6 <__udivmodqi4_ep>
+
+000003ae <__udivmodqi4_loop>:
+ 3ae:	99 1f       	adc	r25, r25
+ 3b0:	96 17       	cp	r25, r22
+ 3b2:	08 f0       	brcs	.+2      	; 0x3b6 <__udivmodqi4_ep>
+ 3b4:	96 1b       	sub	r25, r22
+
+000003b6 <__udivmodqi4_ep>:
+ 3b6:	88 1f       	adc	r24, r24
+ 3b8:	7a 95       	dec	r23
+ 3ba:	c9 f7       	brne	.-14     	; 0x3ae <__udivmodqi4_loop>
+ 3bc:	80 95       	com	r24
+ 3be:	08 95       	ret
+
+000003c0 <__divmodhi4>:
+ 3c0:	97 fb       	bst	r25, 7
+ 3c2:	07 2e       	mov	r0, r23
+ 3c4:	16 f4       	brtc	.+4      	; 0x3ca <__divmodhi4+0xa>
+ 3c6:	00 94       	com	r0
+ 3c8:	06 d0       	rcall	.+12     	; 0x3d6 <__divmodhi4_neg1>
+ 3ca:	77 fd       	sbrc	r23, 7
+ 3cc:	08 d0       	rcall	.+16     	; 0x3de <__divmodhi4_neg2>
+ 3ce:	0b d0       	rcall	.+22     	; 0x3e6 <__udivmodhi4>
+ 3d0:	07 fc       	sbrc	r0, 7
+ 3d2:	05 d0       	rcall	.+10     	; 0x3de <__divmodhi4_neg2>
+ 3d4:	3e f4       	brtc	.+14     	; 0x3e4 <__divmodhi4_exit>
+
+000003d6 <__divmodhi4_neg1>:
+ 3d6:	90 95       	com	r25
+ 3d8:	81 95       	neg	r24
+ 3da:	9f 4f       	sbci	r25, 0xFF	; 255
+ 3dc:	08 95       	ret
+
+000003de <__divmodhi4_neg2>:
+ 3de:	70 95       	com	r23
+ 3e0:	61 95       	neg	r22
+ 3e2:	7f 4f       	sbci	r23, 0xFF	; 255
+
+000003e4 <__divmodhi4_exit>:
+ 3e4:	08 95       	ret
+
+000003e6 <__udivmodhi4>:
+ 3e6:	aa 1b       	sub	r26, r26
+ 3e8:	bb 1b       	sub	r27, r27
+ 3ea:	51 e1       	ldi	r21, 0x11	; 17
+ 3ec:	07 c0       	rjmp	.+14     	; 0x3fc <__udivmodhi4_ep>
+
+000003ee <__udivmodhi4_loop>:
+ 3ee:	aa 1f       	adc	r26, r26
+ 3f0:	bb 1f       	adc	r27, r27
+ 3f2:	a6 17       	cp	r26, r22
+ 3f4:	b7 07       	cpc	r27, r23
+ 3f6:	10 f0       	brcs	.+4      	; 0x3fc <__udivmodhi4_ep>
+ 3f8:	a6 1b       	sub	r26, r22
+ 3fa:	b7 0b       	sbc	r27, r23
+
+000003fc <__udivmodhi4_ep>:
+ 3fc:	88 1f       	adc	r24, r24
+ 3fe:	99 1f       	adc	r25, r25
+ 400:	5a 95       	dec	r21
+ 402:	a9 f7       	brne	.-22     	; 0x3ee <__udivmodhi4_loop>
+ 404:	80 95       	com	r24
+ 406:	90 95       	com	r25
+ 408:	bc 01       	movw	r22, r24
+ 40a:	cd 01       	movw	r24, r26
+ 40c:	08 95       	ret
+
+0000040e <__eerd_byte_tn24a>:
+ 40e:	e1 99       	sbic	0x1c, 1	; 28
+ 410:	fe cf       	rjmp	.-4      	; 0x40e <__eerd_byte_tn24a>
+ 412:	1f ba       	out	0x1f, r1	; 31
+ 414:	8e bb       	out	0x1e, r24	; 30
+ 416:	e0 9a       	sbi	0x1c, 0	; 28
+ 418:	99 27       	eor	r25, r25
+ 41a:	8d b3       	in	r24, 0x1d	; 29
+ 41c:	08 95       	ret
+
+0000041e <__eewr_byte_tn24a>:
+ 41e:	26 2f       	mov	r18, r22
+
+00000420 <__eewr_r18_tn24a>:
+ 420:	e1 99       	sbic	0x1c, 1	; 28
+ 422:	fe cf       	rjmp	.-4      	; 0x420 <__eewr_r18_tn24a>
+ 424:	1c ba       	out	0x1c, r1	; 28
+ 426:	1f ba       	out	0x1f, r1	; 31
+ 428:	8e bb       	out	0x1e, r24	; 30
+ 42a:	2d bb       	out	0x1d, r18	; 29
+ 42c:	0f b6       	in	r0, 0x3f	; 63
+ 42e:	f8 94       	cli
+ 430:	e2 9a       	sbi	0x1c, 2	; 28
+ 432:	e1 9a       	sbi	0x1c, 1	; 28
+ 434:	0f be       	out	0x3f, r0	; 63
+ 436:	01 96       	adiw	r24, 0x01	; 1
+ 438:	08 95       	ret
+
+0000043a <_exit>:
+ 43a:	f8 94       	cli
+
+0000043c <__stop_program>:
+ 43c:	ff cf       	rjmp	.-2      	; 0x43c <__stop_program>
