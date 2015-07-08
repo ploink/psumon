@@ -1,41 +1,42 @@
 Partlist
 
-Exported from psumon.sch at 24-04-2015 11:31:35
+Exported from psumon.brd at 08-07-2015 23:53:47
 
 EAGLE Version 5.12.0 Copyright (c) 1988-2011 CadSoft
 
-Part     Value          Device             Package        Library           Sheet
+Part     Value          Package       Library  Position (mil)        Orientation
 
-BUZZER   BUZZERNS       BUZZERNS           BUZZER-12MM-NS SparkFun          1
-C1       100n           CAPACITOR_R0805    RESC2012X70N   #joost            1
-C2       100n           CAPACITOR_R0805    RESC2012X70N   #joost            1
-C3       100n           CAPACITOR_R0805    RESC2012X70N   #joost            1
-C4       100n           CAPACITOR_R0805    RESC2012X70N   #joost            1
-C5       100n           CAPACITOR_R0805    RESC2012X70N   #joost            1
-C6       2u2            CAPACITOR_R0805    RESC2012X70N   #joost            1
-C7       2u2            CAPACITOR_R0805    RESC2012X70N   #joost            1
-C8       2u2            CAPACITOR_R0805    RESC2012X70N   #joost            1
-D1       Orange         LEDC               0805P          m-pad-2.1         1
-D2       Red            LEDC               0805P          m-pad-2.1         1
-D3       Yellow         LEDC               0805P          m-pad-2.1         1
-IC1      ATTINY24A      TINY24/44/84-SSU   SOIC14         avr-7             1
-IC2      78L05          L78LXXCU/BU        SOT89          v-reg-3           1
-J1       SATA_POWER1    SATA_POWER1        SATA_POWER1    #joost            1
-JP1      header90x2     PINHD-1X2_2.54-90° 1X02/90        pinhead-1         1
-JP2      AVR-ISP-6VERT  AVR-ISP-6VERT      AVR-ISP-6      avr-7             1
-R1       10             RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
-R2       10             RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
-R3       10             RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
-R4       1M2            RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
-R5       470k           RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
-R6       270k           RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
-R7       100k           RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
-R8       100k           RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
-R9       100k           RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
-R10      220            RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
-R11      220            RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
-R12      220            RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
-R13      220            RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
-R14      1k             RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
-R15      1k             RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
-R16      1k             RESISTOR_0805      RESC2012X70N   ipc-7351-resistor 1
+BUZZER   TMB12A05       BUZZER_12_7.6 psumon   (1200.787 246.063)    R180
+C1       100n           C0805         psumon   (738.189 885.827)     R180
+C2       100n           C0805         psumon   (738.189 649.606)     R180
+C3       100n           C0805         psumon   (738.189 413.386)     R180
+C4       100n           C0805         psumon   (826.772 1082.677)    R90
+C5       100n           C0805         psumon   (1205.906 523.228)    R0
+C6       10uF/16V Tant  C1206P        psumon   (570.866 413.386)     R180
+C7       10uF/16V Tant  C1206P        psumon   (570.866 649.606)     R180
+C8       10uF/16V Tant  C1206P        psumon   (570.866 767.717)     R180
+D1       Green          D0805         psumon   (1732.283 196.85)     R0
+D2       Red            D0805         psumon   (1732.283 413.386)    R0
+D3       Yellow         D0805         psumon   (1732.283 629.921)    R0
+IC1      ATTINY24A      SOIC14        psumon   (1209.449 750.394)    R90
+IC2      78L05          SOT89         psumon   (651.575 1063.386)    R270
+ISP      AVR-ISP-6VERT  AVR-ISP-6     psumon   (1200.787 1062.992)   R0
+J1       SATA_POWER1    SATA_POWER1   psumon   (413.78 590.551)      R270
+J2       SATA_POWER2    SATA_POWER2   psumon   (167.323 590.551)     R90
+JP1      Jumper_3pin    1X03/90       psumon   (1653.543 984.252)    R270
+R1       10             R0805         psumon   (590.551 885.827)     R180
+R2       10             R0805         psumon   (590.551 531.496)     R180
+R3       10             R0805         psumon   (590.551 295.276)     R180
+R4       1M2            R0805         psumon   (738.189 767.717)     R180
+R5       470k           R0805         psumon   (738.189 531.496)     R180
+R6       270k           R0805         psumon   (738.189 295.276)     R180
+R7       100k           R0805         psumon   (885.827 885.827)     R180
+R8       100k           R0805         psumon   (885.827 649.606)     R180
+R9       100k           R0805         psumon   (885.827 413.386)     R180
+R10      220            R0805         psumon   (885.827 767.717)     R0
+R11      220            R0805         psumon   (885.827 531.496)     R0
+R12      220            R0805         psumon   (885.827 295.276)     R0
+R13      220            R0805         psumon   (1574.803 748.031)    R0
+R14      1k             R0805         psumon   (1574.803 196.85)     R0
+R15      1k             R0805         psumon   (1574.803 413.386)    R0
+R16      1k             R0805         psumon   (1574.803 629.921)    R0

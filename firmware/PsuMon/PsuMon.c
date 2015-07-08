@@ -13,9 +13,9 @@
 #include "bits.h"
 
 const char fusedata[] __attribute__ ((section (".fuse"))) = {0xE2, 0xDC, 0xFF};
-uint8_t EEMEM EE_REF3=0xff;
-uint8_t EEMEM EE_REF5=0xff;
-uint8_t EEMEM EE_REF12=0xff;
+byte EEMEM EE_REF3=0xff;
+byte EEMEM EE_REF5=0xff;
+byte EEMEM EE_REF12=0xff;
 
 
 #define	LED_3V	BIT(PORTB,0)
@@ -36,6 +36,7 @@ byte REF3	 =  3.3*(100.0/(100+270))*255/1.1;
 byte REF5	 =  5.0*(100.0/(100+470))*255/1.1;
 byte REF12 =  12.0*(100.0/(100+1200))*255/1.1;
 
+// Max ripple values.
 static const byte RIPMAX3 = 0.050*255/1.1;
 static const byte RIPMAX5 = 0.050*255/1.1;
 static const byte RIPMAX12 = 0.120*255/1.1;
