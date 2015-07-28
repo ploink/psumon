@@ -34,6 +34,6 @@ The design includes two optionions for a <a href="https://raw.githubusercontent.
 To measure the voltages, the DC levels are divided down using a resistive divider to get them within range of the 1.1V reference from the ATtiny24A MCU. Using a capacitor, the AC ripple voltages are coupled directly to the same MCU pins to get a better sensitivity. This means the firmware needs to average to get the DC level and determine min/max values to get the ripple.
 
 ## Calibration
-The firmware has a provision for calibration. All you need to do after programming is to connect it to a reference supply for the first time and it wil measure and store the reference values. <br>The PSU in one of my computers is accurate to about 1.5% so I just used that, but if you plan to sell this product, you should really make a good calibration setup.
+The firmware has a provision for calibration. All you need to do after programming is to connect it to a reference supply for the first time and it wil measure and store the reference values. The PSU in one of my computers is accurate to about 1.5% so I just used that, but if you plan to sell this product, you should really make a good calibration setup.
 
 Note that even when you use precision resistors, the 1.1V reference inside the MCU is really not accurate enough to skip the calibration step!
