@@ -41,3 +41,6 @@ Do NOT replace the three tantalum capacitors with ceramics. The ESR is important
 The firmware has a provision for calibration. All you need to do after programming is to connect it to a reference supply for the first time and it wil measure and store the reference values. The PSU in one of my computers is accurate to about 1.5% so I just used that, but if you plan to sell this product, you should really make a good calibration setup.
 
 Note that even when you use precision resistors, the 1.1V reference inside the MCU is really not accurate enough to skip the calibration step!
+
+## To wrap it up
+It is strongly recommended to protect the PCB from shorts inside your computer case. Wrapping it in 30mm diameter transparant heatshrink tubing will do the job.
