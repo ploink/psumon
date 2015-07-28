@@ -33,6 +33,8 @@ The design includes two option for a <a href="https://raw.githubusercontent.com/
 
 To measure the voltages, the DC levels are divided down using a resistive divider to get them within range of the 1.1V reference from the ATtiny24A MCU. Using a capacitor, the AC ripple voltages are coupled directly to the same MCU pins to get a better sensitivity. This means the firmware needs to average to get the DC level and determine min/max values to get the ripple.
 
+The 78L05 (IC2) is to make sure the MCU gets a stable 5V power even if the DUT (device under test) is very bad.
+
 Do NOT replace the three tantalum capacitors with ceramics. The ESR is important for suppressing high frequency resonance in the power cable, but you may want to add a 100nF ceramic in parallel as is required in the <a href="http://www.formfactors.org/developer/specs/atx12v%20psdg2.01.pdf">ATX PSU design guide (pdf)</a> section 3.2.6.
 
 ## Calibration
